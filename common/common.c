@@ -1051,6 +1051,14 @@ int x264_param_parse( x264_param_t *p, const char *name, const char *value )
         p->psz_clbin_file = strdup( value );
     OPT("opencl-device")
         p->i_opencl_device = atoi( value );
+    OPT("log2-max-frame-num")
+        p->user_info.sps_i_log2_max_frame_num = atoi( value );
+    OPT("log2-max-poc-lsb")
+        p->user_info.sps_i_log2_max_poc_lsb = atoi( value );
+    OPT("poc-type")
+        p->user_info.sps_i_poc_type = atoi( value );
+    OPT("override-sps-params")
+        p->user_info.override_sps_params = 1;
     else
     {
         b_error = 1;

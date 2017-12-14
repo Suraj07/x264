@@ -162,6 +162,8 @@ void x264_sps_init( x264_sps_t *sps, int i_id, x264_param_t *param )
         max_frame_num = X264_MAX( max_frame_num, time_to_recovery+1 );
     }
 
+    x264_log( NULL, X264_LOG_INFO, "set.c: before: i_log2_max_frame_num: %d, i_poc_type: %d, i_log2_max_poc_lsb: %d\n", sps->i_log2_max_frame_num, sps->i_poc_type, sps->i_log2_max_poc_lsb);
+
     sps->i_log2_max_frame_num = 4;
     while( (1 << sps->i_log2_max_frame_num) <= max_frame_num )
         sps->i_log2_max_frame_num++;
@@ -174,6 +176,19 @@ void x264_sps_init( x264_sps_t *sps, int i_id, x264_param_t *param )
         while( (1 << sps->i_log2_max_poc_lsb) <= max_delta_poc * 2 )
             sps->i_log2_max_poc_lsb++;
     }
+
+    // Additional SPS params are directly assigned to match input SPS params
+    if( param->user_info.override_sps_params == 1)
+    {
+        sps->i_poc_type = param->user_info.sps_i_poc_type;
+        sps->i_log2_max_frame_num = param->user_info.sps_i_log2_max_frame_num;
+        sps->i_log2_max_poc_lsb = param->user_info.sps_i_log2_max_poc_lsb;
+    } else 
+    {
+         x264_log( NULL, X264_LOG_INFO, "not overriding configurable SPS parameters\n");
+    }
+
+    x264_log( NULL, X264_LOG_INFO, "set.c: after: i_log2_max_frame_num: %d, i_poc_type: %d, i_log2_max_poc_lsb: %d\n", sps->i_log2_max_frame_num, sps->i_poc_type, sps->i_log2_max_poc_lsb);
 
     sps->b_vui = 1;
 
